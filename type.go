@@ -2,7 +2,16 @@ package watermark
 
 import "image/color"
 
-type Font struct {
+type FontInfo struct {
+	fontPath  string //字体路径
+	fontBytes []byte //字体文件内容
+}
+
+// 字体接口
+type Font interface {
+	SetFontFromPath(path string) error
+	SetFontFromByte(bs []byte) error
+	ReadFont() ([]byte, error)
 }
 
 type Option struct {
@@ -13,10 +22,10 @@ type Option struct {
 	Top        int        //起点水印距背景图顶部(Y轴)距离
 	Left       int        //起点水印距背景图左边(X轴)距离
 	DIP        float64    //扫描精度,默认56
-	Opacity    float32    //透明度
+	Opacity    float32    //水印透明度
 	Replicate  bool       //水印是否重复
 	Rotate     int        //旋转角度(0~360)
-	Font       *Font      //字体
+	Font       Font       //字体
 	FontColor  color.RGBA //字体颜色
 	FontSize   int        //字体大小
 	MarkText   string     //水印文本
