@@ -6,6 +6,9 @@ import (
 )
 
 var ErrFontEmpty = errors.New("font content is empty")
+var ErrDirectoryEmpty = errors.New("directory is empty")
+var ErrDirectoryNotExist = errors.New("directory is not exist")
+var ErrDirectoryNotWritable = errors.New("directory is not writable")
 
 func NewFontFromPath(p string) (*FontInfo, error) {
 	f := new(FontInfo)
@@ -59,4 +62,47 @@ func (f *FontInfo) ReadFont() ([]byte, error) {
 	}
 
 	return f.fontBytes, nil
+}
+
+// NewWatermark 新建水印对象.
+func NewWatermark(opt Option) *Watermark {
+	res := new(Watermark)
+
+	return res
+}
+
+// SetOption 设置选项.
+func (w *Watermark) SetOption(opt Option) *Watermark {
+	w.opt = opt
+	return w
+}
+
+// SetTempDir 设置临时目录.
+func (w *Watermark) SetTempDir(dir string) error {
+	if dir == "" {
+		return ErrDirectoryEmpty
+	} else if !kgo.KFile.IsDir(dir) {
+		return ErrDirectoryNotExist
+	} else if !kgo.KFile.IsWritable(dir) {
+		return ErrDirectoryNotWritable
+	}
+
+	w.tempDir = dir
+
+	return nil
+}
+
+// SetOutputDir 设置输出目录.
+func (w *Watermark) SetOutputDir(dir string) error {
+	if dir == "" {
+		return ErrDirectoryEmpty
+	} else if !kgo.KFile.IsDir(dir) {
+		return ErrDirectoryNotExist
+	} else if !kgo.KFile.IsWritable(dir) {
+		return ErrDirectoryNotWritable
+	}
+
+	w.outputDir = dir
+
+	return nil
 }
